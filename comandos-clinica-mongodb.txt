@@ -1,0 +1,128 @@
+// SISTEMA DE GESTION CLINICA: modelo MongoDB basado en el diagrama.
+// Datos ficticios de ejemplo. Ejecutar los comandos dentro de mongosh.
+// Para entrar desde PowerShell, ejecutar primero: mongosh
+// Ejecutar las inserciones una sola vez: los _id repetidos producen error.
+
+// 1. Seleccionar la base de datos.
+use clinica
+
+// 2. Crear las colecciones.
+// La base aparecera en show dbs despues de crear la primera coleccion.
+db.createCollection("pacientes")
+db.createCollection("medicos")
+db.createCollection("citas")
+db.createCollection("historiasClinicas")
+db.createCollection("diagnosticos")
+db.createCollection("usuarios")
+
+show dbs
+show collections
+
+// 3. Registrar un paciente.
+// _id sustituye al campo id del diagrama y usa un String.
+// ISODate permite guardar una fecha como Date, en lugar de texto.
+db.pacientes.insertOne({
+    _id: "PAC001",
+    nombre: "Ana Torres",
+    dni: "00000001",
+    fechaNacimiento: ISODate("1995-04-12T00:00:00Z"),
+    contacto: "ana@example.com"
+})
+
+// 4. Registrar un medico.
+db.medicos.insertOne({
+    _id: "MED001",
+    nombre: "Luis Ramos",
+    especialidad: "Medicina general",
+    registroCMP: "CMP-EJEMPLO-001"
+})
+
+// 5. Registrar una cita vinculada al paciente y al medico.
+// Se agrega idMedico para representar la relacion con el medico.
+// fecha guarda el dia; hora guarda la hora local de la cita (Lima).
+db.citas.insertOne({
+    _id: "CIT001",
+    fecha: ISODate("2026-10-28T00:00:00Z"),
+    hora: "10:00",
+    estado: "atendida",
+    idPaciente: "PAC001",
+    idMedico: "MED001"
+})
+
+// 6. Crear la historia clinica y registrar su diagnostico por separado.
+// Cada diagnostico se vincula con su historia mediante idHistoriaClinica.
+db.historiasClinicas.insertOne({
+    _id: "HIS001",
+    idPaciente: "PAC001"
+})
+
+db.diagnosticos.insertOne({
+    _id: "DIA001",
+    idHistoriaClinica: "HIS001",
+    fecha: ISODate("2026-10-28T15:00:00Z"),
+    descripcion: "Diagnostico ficticio de ejemplo",
+    tratamiento: "Tratamiento ficticio de ejemplo",
+    idCita: "CIT001",
+    idMedico: "MED001"
+})
+
+// 7. Registrar usuarios con los tres roles del diagrama.
+// idMedico vincula al usuario MEDICO con su registro profesional.
+// Estos documentos representan usuarios; no implementan autenticacion.
+db.usuarios.insertOne({
+    _id: "USR001",
+    nombreUsuario: "administrador",
+    rol: "ADMIN"
+})
+
+db.usuarios.insertOne({
+    _id: "USR002",
+    nombreUsuario: "recepcion",
+    rol: "RECEPCIONISTA"
+})
+
+db.usuarios.insertOne({
+    _id: "USR003",
+    nombreUsuario: "luis.ramos",
+    rol: "MEDICO",
+    idMedico: "MED001"
+})
+
+// 8. Consultar todos los documentos, como en la sesion anterior.
+db.pacientes.find()
+db.medicos.find()
+db.citas.find()
+db.historiasClinicas.find()
+db.diagnosticos.find()
+db.usuarios.find()
+
+// 9. Consultar las relaciones usando filtros sencillos.
+// Buscar un paciente.
+db.pacientes.find({ _id: "PAC001" })
+
+// Ver las citas del paciente.
+db.citas.find({ idPaciente: "PAC001" })
+
+// Ver las citas del medico.
+db.citas.find({ idMedico: "MED001" })
+
+// Ver la historia del paciente.
+db.historiasClinicas.find({ idPaciente: "PAC001" })
+
+// Ver los diagnosticos de esa historia clinica.
+db.diagnosticos.find({ idHistoriaClinica: "HIS001" })
+
+// Ver los diagnosticos registrados en una cita.
+db.diagnosticos.find({ idCita: "CIT001" })
+
+// Buscar al medico que atendio la cita.
+db.medicos.find({ _id: "MED001" })
+
+// NOTAS DEL MODELO
+// Las referencias son valores String; MongoDB no comprueba que existan
+// los pacientes, medicos o citas referenciados. La aplicacion debe validarlos.
+// Los metodos del diagrama (agendarCita, autenticar, etc.) son operaciones
+// de la aplicacion: no se guardan como campos de los documentos.
+// El titulo menciona medicamentos y facturacion, pero el diagrama no
+// muestra sus entidades ni sus campos; este archivo cubre lo que si muestra.
+// No se incluyen comandos para eliminar bases de datos o documentos.
