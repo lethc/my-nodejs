@@ -1,29 +1,16 @@
-// Servidor http
+const express=require('express')
+const app=express()
+const userRouter = require('./routers/userRouters')
 
-const http=require('http')
-const { json } = require('stream/consumers')
-const server =http.createServer((request, response)=>{
-    try {
-    if(request.url=='/'&&request.method=='GET') {
-        response.end(JSON.stringify({"message":"Accediendo al servidor"}))
-    } else if (request.url=='/home'&&request.method=='GET'){
-        response.statusCode=200
-        
-        response.end(JSON.stringify({"message": "ACCEDIENDO A HOME"}))
-    } else {
-        response.statusCode=404
-        
-        response.end(JSON.stringify({"message":"No encontrado"}))
-    }
-    } catch(error){
-        response.statusCode=5000
-        response.end(JSON.stringify({"message":"Ha ocurrido un servidor en el servidor"}))
-    }
+// para que funcione en formato get
+app.get('/', (req, res)=>{
+    console.log("Servidor Creado con express.js")
 })
 
-const port=5000
-const host="localhost"
+app.use(express.json())
 
-server.listen(port, host,()=>{
-    console.log(`servidor ejecutandose en http://${host}:${port}`)
+app.use('/users', userRouter)
+
+app.listen(3000,()=>{
+    console.log("Aplicacion con express ejecutandose en el puerto 3000")
 })
