@@ -1,0 +1,47 @@
+# Historial de comandos de MongoDB — 28 de octubre de 2026
+# Transcrito de la sesión proporcionada por el usuario, sin las salidas.
+# Versiones de la sesión: MongoDB 9.0.4 y mongosh 2.14.0.
+# Registro de consulta: los comandos de escritura modifican la base de datos.
+
+# En PowerShell
+mongosh.exe --version
+mongosh
+
+# Dentro de mongosh (base inicial: test)
+show dbs
+use matricula
+use admin
+show dbs
+use matricula
+use matricula
+show dbs
+use admin
+
+# En la base admin
+db. createCollection("cliente")
+show collections
+show dbs
+db. createCollection("producto")
+show collections
+
+# Este comando dio error: '--help' no es un argumento válido de show.
+show --help
+show collections
+use matricula
+
+# En la base matricula
+db. createCollection("cliente")
+db. createCollection("producto")
+show collections
+
+# Se utilizó la colección llamada literalmente collection.
+db.collection.insertOne({"nombre":"Jose Carlos","apellido":"Pilco Aldia"})
+db.collection.find()
+
+# Este comando dio error: insertONe no existe; el nombre correcto es insertOne.
+db.collection.insertONe({"nombre":"Michael Alexander", "apellido":"Bellido"})
+db.collection.insertOne({"nombre":"Michael Alexander", "apellido":"Bellido"})
+db.collection.find()
+
+# Comando original conservado: se pasó un arreglo a insertOne.
+db.collection.insertOne([{"categoria":"limpieza"}, {"nombre_proveedor":"Eduardo Rodriguez"}])
