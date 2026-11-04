@@ -1,14 +1,26 @@
 const UserService=require('../services/userService')
 
 
-exports.getAllUsers=(req, res)=>{
-    console.log(req.query.enabled)
-    // console.log("Accediendo a todos los usuarios");
-    res.status(200).send("Accediendo a todos los usuarios")
+exports.getAllUsers=async(req, res)=>{
+    try {
+        const users=await UserService.getAll()
+        res.status(200).json(users)
+    } catch (error) {
+        res.status(500).json({error:error.message})
+    }
 }
 
-exports.getUser=(req, res)=>{
-    res.status(201).send("Accediendo al usuario con ID: "+req.params.id)
+exports.getUser=async(req, res)=>{
+    try {
+        const id=req.params.id
+        const user=await UserService.filterById(id)
+        if(!user){
+            return res.status(404).json({"message":"Usuario no encontrado"})
+        }
+        res.status(200).json(user)
+    } catch (error) {
+        res.status(error.name === 'CastError' ? 400 : 500).json({error:error.message})
+    }
 }
 
 // request y response para sus salidas
