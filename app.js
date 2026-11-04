@@ -1,6 +1,10 @@
 const express=require('express')
 const app=express()
 const userRouter = require('./routers/userRouters')
+const productRouter = require('./routers/productRouters')
+const categoryRouter = require('./routers/categoryRouters')
+const supplierRouter = require('./routers/supplierRouters')
+const customerRouter = require('./routers/customerRouters')
 const path=require('path')
 const connection=require('./database/connection')
 
@@ -28,6 +32,10 @@ app.get('/', (req, res)=>{
 app.use(express.json())
 
 app.use('/users', userRouter)
+app.use('/productos', productRouter)
+app.use('/categorias', categoryRouter)
+app.use('/proveedores', supplierRouter)
+app.use('/clientes', customerRouter)
 
 app.listen(3000,()=>{
     console.log("Aplicacion con express ejecutandose en el puerto 3000")
