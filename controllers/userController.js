@@ -1,3 +1,6 @@
+const UserService=require('../services/userService')
+
+
 exports.getAllUsers=(req, res)=>{
     console.log(req.query.enabled)
     // console.log("Accediendo a todos los usuarios");
@@ -9,13 +12,15 @@ exports.getUser=(req, res)=>{
 }
 
 // request y response para sus salidas
-exports.createUser = (req, res) => {
-    const { nombre, apellido, email, telefono } = req.body
+exports.createUser = async (req, res) => {
+    try {
+        let data = req.body
+            await UserService.create(data)
+        res.status(201).send("Usuario Registrado")
 
-    res.status(201).json({
-        mensaje: "Usuario creado",
-        usuario: { nombre, apellido, email, telefono }
-    })
+    } catch (error) {
+        res.status(500).json({"error":error.message})
+    }
 }
 
 exports.updateUser = (req, res) => {
