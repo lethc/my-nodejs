@@ -5,6 +5,8 @@ const productRouter = require('./routers/productRouters')
 const categoryRouter = require('./routers/categoryRouters')
 const supplierRouter = require('./routers/supplierRouters')
 const customerRouter = require('./routers/customerRouters')
+const authRouter = require('./routers/authRouters')
+
 const path=require('path')
 const connection=require('./database/connection')
 
@@ -36,6 +38,7 @@ app.use('/productos', productRouter)
 app.use('/categorias', categoryRouter)
 app.use('/proveedores', supplierRouter)
 app.use('/clientes', customerRouter)
+app.use('/auth', authRouter)
 
 app.listen(3000,()=>{
     console.log("Aplicacion con express ejecutandose en el puerto 3000")
