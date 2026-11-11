@@ -1,12 +1,14 @@
 const express=require('express')
 const app=express()
-const userRouter = require('./routers/userRouters')
+// Routers de users, auth y dashboard desactivados: mientras esten comentados
+// (aqui y en los app.use de abajo) /users, /auth y /dashboard responden 404
+// const userRouter = require('./routers/userRouters')
 const productRouter = require('./routers/productRouters')
 const categoryRouter = require('./routers/categoryRouters')
 const supplierRouter = require('./routers/supplierRouters')
 const customerRouter = require('./routers/customerRouters')
-const authRouter = require('./routers/authRouters')
-const dashboardRouter = require('./routers/dashboardRouter')
+// const authRouter = require('./routers/authRouters')
+// const dashboardRouter = require('./routers/dashboardRouter')
 const socket = require('socket.io')
 
 // Socket.IO necesita un servidor HTTP propio para compartir el puerto con Express,
@@ -34,19 +36,19 @@ app.get('/', (req, res)=>{
 
 
 // para que funcione en formato get
-app.get('/', (req, res)=>{
-    console.log("Servidor Creado con express.js")
-})
+// app.get('/', (req, res)=>{
+//     console.log("Servidor Creado con express.js")
+// })
 
 app.use(express.json())
 
-app.use('/users', userRouter)
+// app.use('/users', userRouter)
 app.use('/productos', productRouter)
 app.use('/categorias', categoryRouter)
 app.use('/proveedores', supplierRouter)
 app.use('/clientes', customerRouter)
-app.use('/auth', authRouter)
-app.use('/dashboard', dashboardRouter)
+// app.use('/auth', authRouter)
+// app.use('/dashboard', dashboardRouter)
 
 server.listen(3000,()=>{
     console.log("Aplicacion con express ejecutandose en el puerto 3000")
