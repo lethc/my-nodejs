@@ -76,6 +76,22 @@ button:disabled {
     color: #c62828;
 }
 
+/* Variante verde del mensaje para avisos de éxito (p. ej. registro correcto) */
+.mensaje.exito {
+    color: #2e7d32;
+}
+
+/* Enlace de navegación entre login y registro */
+.enlace {
+    margin: 16px 0 0;
+    font-size: 14px;
+    text-align: center;
+}
+
+.enlace a {
+    color: #2563eb;
+}
+
 /* Texto que muestra el resultado del dashboard */
 .resultado {
     padding: 16px;
