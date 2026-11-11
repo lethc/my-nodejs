@@ -17,7 +17,9 @@ class AuthService {
     }
     // Firma el JWT con una clave fija de desarrollo; en produccion debe leerse de una variable de entorno
     generateToken(payload) {
-        const token=jwt.sign(payload, 'secret-key')
+        // expiresIn agrega el campo "exp" al token: pasados 5 segundos jwt.verify lo rechaza
+        // (en verifyToken eso responde 401 "jwt expired"). Valor corto pensado solo para pruebas.
+        const token=jwt.sign(payload, 'secret-key', { expiresIn: '5s' })
         return token
     }
 }
