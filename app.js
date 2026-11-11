@@ -15,6 +15,9 @@ const connection=require('./database/connection')
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 
+// Sirve el frontend estatico de la carpeta public (login.html, panel.html, css y js)
+app.use(express.static(path.join(__dirname, 'public')))
+
 app.get('/', (req, res)=>{
     const data={
         "title":"Titulo de la página",

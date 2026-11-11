@@ -1,0 +1,96 @@
+/* Estilos compartidos por login.html y panel.html */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f0f2f5;
+    color: #222;
+}
+
+/* Tarjeta central donde se muestra cada pantalla */
+.card {
+    width: 100%;
+    max-width: 380px;
+    margin: 16px;
+    padding: 32px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    margin: 0 0 24px;
+    font-size: 24px;
+    text-align: center;
+}
+
+label {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+button {
+    width: 100%;
+    padding: 11px;
+    border: none;
+    border-radius: 6px;
+    background: #2563eb;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+
+button:disabled {
+    background: #93a8d9;
+    cursor: not-allowed;
+}
+
+/* Mensaje de error o de estado debajo del formulario */
+.mensaje {
+    min-height: 20px;
+    margin-top: 16px;
+    font-size: 14px;
+    text-align: center;
+    color: #c62828;
+}
+
+/* Texto que muestra el resultado del dashboard */
+.resultado {
+    padding: 16px;
+    margin-bottom: 24px;
+    border-radius: 6px;
+    background: #eef3ff;
+    text-align: center;
+    word-break: break-word;
+}
+
+/* Boton secundario para cerrar sesion */
+.secundario {
+    background: #6b7280;
+}
+
+.secundario:hover {
+    background: #4b5563;
+}
