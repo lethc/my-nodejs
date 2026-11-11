@@ -27,13 +27,8 @@ app.set('view engine', 'ejs')
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.get('/', (req, res)=>{
-    const data={
-        "title":"Titulo de la página",
-        "message":"Bienvenido a mi sitio Web",
-        "showMessage":true,
-        "items":[1,2,3,4,5]
-    }
-    res.render('index', data)
+    // index.ejs usa la variable title, por lo que debe pasarse al renderizar
+    res.render('index', { title: 'Chat' })
 })
 
 

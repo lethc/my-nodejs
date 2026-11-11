@@ -1,21 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
+    <title>
+        <%=title%>
+    </title>
 </head>
+
 <body>
-    <%= title %>
-    <% if (showMessage) { %>
-        <%= message %>
-    <% } else { %>
-        este es un mensaje por defecto
-    <% } %>
-    <ul>
-        <% for (let i = 0; i < items.length; i++) { %>
-            <li><%= items[i] %></li>
-        <% } %>
-    </ul>
+    <div id="chat">
+        <input type="text" id="username" placeholder="Ingrese su nombre de Usuario">
+
+        <div id="messages">
+            <div class="message"> Javierespna:Hola </div>
+            <div class="message"> Javierespna:Hola </div>
+        </div>
+        <div id="writing">
+
+        </div>
+        <!-- El textarea va en una sola linea: cualquier espacio interno impide que se vea el placeholder -->
+        <textarea id="write-message" placeholder="Ingrese su Mensaje"></textarea>
+
+        <!-- Ruta absoluta: socket.io la sirve automaticamente desde el servidor -->
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            // io() abre la conexion con el servidor; dispara el evento "connection" de socket.js
+            const socket = io()
+        </script>
+    </div>
+
 </body>
+
 </html>
