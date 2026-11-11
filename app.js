@@ -7,6 +7,14 @@ const supplierRouter = require('./routers/supplierRouters')
 const customerRouter = require('./routers/customerRouters')
 const authRouter = require('./routers/authRouters')
 const dashboardRouter = require('./routers/dashboardRouter')
+const socket = require('socket.io')
+
+// Socket.IO necesita un servidor HTTP propio para compartir el puerto con Express,
+// por eso se crea aqui con createServer(app) y al final se usa server.listen en vez de app.listen
+const server = require('http').createServer(app)
+const io = socket(server)
+// Los eventos de socket se definen en socket.js, que recibe la instancia io
+require('./socket')(io)
 
 const path=require('path')
 const connection=require('./database/connection')
@@ -45,6 +53,6 @@ app.use('/clientes', customerRouter)
 app.use('/auth', authRouter)
 app.use('/dashboard', dashboardRouter)
 
-app.listen(3000,()=>{
+server.listen(3000,()=>{
     console.log("Aplicacion con express ejecutandose en el puerto 3000")
 })
