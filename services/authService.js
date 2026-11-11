@@ -11,8 +11,14 @@ class AuthService {
         const userAuth = new UserAuth(data)
         return await userAuth.save()
     }
-    filterByEmail(){
-
+    async filterByEmail(email){
+        const userAuth = await UserAuth.findOne({email})
+        return userAuth
+    }
+    // Firma el JWT con una clave fija de desarrollo; en produccion debe leerse de una variable de entorno
+    generateToken(payload) {
+        const token=jwt.sign(payload, 'secret-key')
+        return token
     }
 }
 
