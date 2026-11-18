@@ -37,6 +37,13 @@
             const messages = document.getElementById('messages')
             let writingTimeout
 
+            // Muestra los fallos de MongoDB enviados por el servidor, sin insertar HTML.
+            socket.on('chat-error', (error)=>{
+                // Evita que el temporizador del aviso de escritura borre el error recibido.
+                clearTimeout(writingTimeout)
+                writing.textContent = error.message
+            })
+
             // El evento entrega el historial completo; reemplazamos la lista para no duplicarlo.
             socket.on('all-messages', (m)=>{
                 messages.replaceChildren()
