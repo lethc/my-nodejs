@@ -71,6 +71,22 @@ body {
     font-size: 12px;
 }
 
+/* El asistente se distingue sin cambiar el formato compacto del chat. */
+.message--assistant {
+    background: #365b40;
+}
+
+#botStatus:not(:empty) {
+    margin: 6px 8px;
+    color: #555;
+    font-size: 12px;
+}
+
+#writeMessage:disabled {
+    background: #f4f4f4;
+    cursor: wait;
+}
+
 #writeMessage {
     /* El ancho descuenta los dos margenes laterales de 10 px. */
     display: block;

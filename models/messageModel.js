@@ -6,7 +6,9 @@ const Schema = mongoose.Schema
 // trim elimina espacios al principio y al final; required rechaza cadenas vacias.
 const messageSchema = Schema({
     username:{type:String,required:true,trim:true},
-    message:{type:String,required:true,trim:true}
+    message:{type:String,required:true,trim:true},
+    // Los documentos anteriores se interpretan como mensajes de usuario.
+    role:{type:String,enum:['user','assistant'],default:'user'}
 })
 
 // Sin tercer argumento, Mongoose guarda estos documentos en la coleccion "messages"

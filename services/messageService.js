@@ -14,6 +14,11 @@ class MessageService{
         const message  = new Message(msg)
         return await message.save()
     }
+    async getRecent(limit = 20){
+        // Solo enviamos a OpenRouter una ventana del historial, ordenada de antiguo a reciente.
+        const messages = await Message.find({}).sort({_id:-1}).limit(limit)
+        return messages.reverse()
+    }
 }
 
 module.exports = MessageService

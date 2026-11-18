@@ -22,6 +22,7 @@
         <div id="messages" role="log" aria-label="Mensajes de la conversación" aria-live="polite"></div>
         <!-- Espacio reservado para el aviso de que otro usuario esta escribiendo. -->
         <div id="writing" role="status"></div>
+        <div id="botStatus" role="status" aria-live="polite"></div>
         <!-- Sin espacios entre las etiquetas para que el mensaje empiece vacio. -->
         <textarea id="writeMessage" aria-label="Mensaje" placeholder="Ingrese su Mensaje"></textarea>
 
@@ -35,7 +36,24 @@
             const writeMessage = document.getElementById('writeMessage')
             const writing = document.getElementById('writing')
             const messages = document.getElementById('messages')
+            const botStatus = document.getElementById('botStatus')
             let writingTimeout
+            let sending = false
+
+            socket.on('bot-status', (status)=>{
+                botStatus.textContent = status.busy ? 'OpenRouter esta preparando una respuesta...' : ''
+            })
+
+            socket.on('connect_error', ()=>{
+                writing.textContent = 'No se pudo conectar con el servidor del chat.'
+            })
+
+            socket.on('disconnect', ()=>{
+                sending = false
+                writeMessage.disabled = false
+                botStatus.textContent = ''
+                writing.textContent = 'Conexion interrumpida. Espera a que el chat se reconecte.'
+            })
 
             // Muestra los fallos de MongoDB enviados por el servidor, sin insertar HTML.
             socket.on('chat-error', (error)=>{
@@ -49,7 +67,7 @@
                 messages.replaceChildren()
                 for(const message of m) {
                     const bubble = document.createElement('div')
-                    bubble.className = 'message'
+                    bubble.className = message.role === 'assistant' ? 'message message--assistant' : 'message'
                     // textContent muestra el texto literalmente, sin ejecutarlo como HTML.
                     bubble.textContent = `${message.username}:${message.message}`
                     messages.appendChild(bubble)
@@ -79,18 +97,36 @@
                 if(event.key === 'Enter' && !event.shiftKey && !event.isComposing){
                     // Evita insertar el Enter en el texto y enviar varias veces al mantenerlo pulsado.
                     event.preventDefault()
-                    if(event.repeat) return
+                    if(event.repeat || sending) return
+                    if(!socket.connected){
+                        writing.textContent = 'Espera a que el chat se conecte antes de enviar.'
+                        return
+                    }
                     const name = username.value.trim()
                     const text = writeMessage.value.trim()
                     if(!name || !text){
                         return alert("El nombre del usuario y el mensaje son requeridos")
                     }
                     // message coincide con el campo que valida el servidor y lee el historial.
-                    socket.emit('new-message', {
+                    sending = true
+                    writeMessage.disabled = true
+                    clearTimeout(writingTimeout)
+                    writing.textContent = ''
+                    // La confirmacion indica si MongoDB guardo el mensaje, aun si OpenRouter fallo.
+                    socket.timeout(65000).emit('new-message', {
                         username: name,
                         message: text
+                    }, (error, result)=>{
+                        sending = false
+                        writeMessage.disabled = false
+                        if(error){
+                            writing.textContent = 'No se recibio confirmacion. Revisa el historial antes de reenviar.'
+                        } else {
+                            if(result?.saved) writeMessage.value = ''
+                            if(!result?.ok) writing.textContent = result?.error || 'No se pudo enviar el mensaje.'
+                        }
+                        writeMessage.focus()
                     })
-                    writeMessage.value=""
                 }
             })
 
