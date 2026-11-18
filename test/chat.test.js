@@ -22,7 +22,7 @@ function fixture(overrides = {}) {
 test('guarda usuario y asistente, y transmite el historial final', async () => {
     const f = fixture({openRouterService: {reply: async history => {
         assert.deepEqual(history, [{username: 'Ana', message: 'Hola', role: 'user'}])
-        return 'Hola Ana'
+        return '**Hola** Ana'
     }}})
     await f.connect()
     let result
@@ -30,9 +30,10 @@ test('guarda usuario y asistente, y transmite el historial final', async () => {
     assert.equal(result.ok, true)
     assert.deepEqual(f.documents, [
         {username: 'Ana', message: 'Hola', role: 'user'},
-        {username: 'Asistente Virtual', message: 'Hola Ana', role: 'assistant'}
+        {username: 'Asistente Virtual', message: '**Hola** Ana', role: 'assistant'}
     ])
     assert.equal(f.broadcasts.filter(event => event.event === 'all-messages').at(-1).data.length, 2)
+    assert.match(f.broadcasts.filter(event => event.event === 'all-messages').at(-1).data[1].html, /<strong>Hola<\/strong>/)
     assert.deepEqual(f.broadcasts.at(-1), {event: 'bot-status', data: {busy: false}})
 })
 

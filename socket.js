@@ -1,5 +1,6 @@
 const MessageService = require('./services/messageService')
 const OpenRouterService = require('./services/openRouterService')
+const presentMessages = require('./services/messagePresenter')
 
 // Eventos de Socket.IO del servidor.
 // app.js lo invoca con la instancia io para registrar aqui los listeners.
@@ -46,14 +47,14 @@ module.exports = (io, {messageService = new MessageService(), openRouterService 
                 saved = true
                 const messages = await messageService.getAll()
                 // Todos reciben el historial actualizado, incluido el autor.
-                io.emit('all-messages', messages)
+                io.emit('all-messages', await presentMessages(messages))
 
                 const history = await messageService.getRecent(20)
                 stage = 'OpenRouter'
                 const answer = await openRouterService.reply(history)
                 stage = 'MongoDB'
                 await messageService.create({username: 'Asistente Virtual', message: answer, role: 'assistant'})
-                io.emit('all-messages', await messageService.getAll())
+                io.emit('all-messages', await presentMessages(await messageService.getAll()))
                 respond({ok: true, saved: true})
             } catch (error) {
                 const detail = stage === 'OpenRouter' ? error.message : 'No se pudo guardar o consultar el chat. Revisa MongoDB.'
@@ -71,7 +72,7 @@ module.exports = (io, {messageService = new MessageService(), openRouterService 
             // Solo el cliente que acaba de entrar necesita cargar el historial inicial.
             // Los listeners ya estan registrados para atender los eventos durante esta consulta.
             const messages = await messageService.getAll()
-            socket.emit('all-messages', messages)
+            socket.emit('all-messages', await presentMessages(messages))
         } catch (error) {
             console.error('Error al cargar el historial:', error.message)
             socket.emit('chat-error', {message: 'No se pudo cargar el historial. Revisa la conexion con MongoDB.'})
