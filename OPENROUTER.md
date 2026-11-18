@@ -21,7 +21,7 @@ OPENROUTER_MODEL=openrouter/free
 
 1. Abre http://localhost:3000 e ingresa un nombre.
 2. Escribe `Hola, explicame que es una coleccion de MongoDB` y presiona Enter.
-3. Aparecera tu mensaje, un aviso de espera y una respuesta firmada como OpenRouter.
+3. Aparecera tu mensaje, el aviso "Asistente Virtual está pensando..." y una respuesta firmada como Asistente Virtual.
 4. Pregunta `Dame un ejemplo de eso`: se envian hasta 20 mensajes recientes como contexto.
 5. Recarga la pagina: ambos mensajes se recuperan de MongoDB.
 6. En mongosh ejecuta:

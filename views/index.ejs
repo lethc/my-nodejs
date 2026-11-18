@@ -41,7 +41,7 @@
             let sending = false
 
             socket.on('bot-status', (status)=>{
-                botStatus.textContent = status.busy ? 'OpenRouter esta preparando una respuesta...' : ''
+                botStatus.textContent = status.busy ? 'Asistente Virtual está pensando...' : ''
             })
 
             socket.on('connect_error', ()=>{

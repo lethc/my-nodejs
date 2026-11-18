@@ -30,7 +30,7 @@ test('guarda usuario y asistente, y transmite el historial final', async () => {
     assert.equal(result.ok, true)
     assert.deepEqual(f.documents, [
         {username: 'Ana', message: 'Hola', role: 'user'},
-        {username: 'OpenRouter', message: 'Hola Ana', role: 'assistant'}
+        {username: 'Asistente Virtual', message: 'Hola Ana', role: 'assistant'}
     ])
     assert.equal(f.broadcasts.filter(event => event.event === 'all-messages').at(-1).data.length, 2)
     assert.deepEqual(f.broadcasts.at(-1), {event: 'bot-status', data: {busy: false}})

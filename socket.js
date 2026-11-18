@@ -52,7 +52,7 @@ module.exports = (io, {messageService = new MessageService(), openRouterService 
                 stage = 'OpenRouter'
                 const answer = await openRouterService.reply(history)
                 stage = 'MongoDB'
-                await messageService.create({username: 'OpenRouter', message: answer, role: 'assistant'})
+                await messageService.create({username: 'Asistente Virtual', message: answer, role: 'assistant'})
                 io.emit('all-messages', await messageService.getAll())
                 respond({ok: true, saved: true})
             } catch (error) {
