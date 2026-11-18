@@ -60,6 +60,8 @@ body {
     color: #fff;
     font-size: 12px;
     line-height: 1.15;
+    /* Conserva los saltos introducidos con Shift+Enter dentro de una burbuja. */
+    white-space: pre-wrap;
     overflow-wrap: anywhere;
 }
 
@@ -75,10 +77,10 @@ body {
     width: calc(100% - 20px);
     min-height: 47px;
     margin: 7px 10px 8px;
-    padding: 5px;
+    padding: 10px;
     border: 1px solid #999;
     border-radius: 2px;
-    font: 13px Arial, sans-serif;
+    font: 11px monospace;
     resize: vertical;
 }
 
