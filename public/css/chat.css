@@ -1,138 +1,240 @@
-/* Estilo del ejemplo de chat. Modifica aqui colores, medidas y espacios. */
+/* 1. Personaliza aqui los colores y la tipografia del chat. */
+:root {
+    color-scheme: light;
+    --chat-background: #f2f5fa;
+    --chat-surface: #ffffff;
+    --chat-text: #17243b;
+    --chat-muted: #5e6d82;
+    --chat-accent: #2457c5;
+    --chat-border: #dbe3ef;
+    --chat-message: #eaf0fc;
+    --chat-assistant: #eaf5ef;
+    --chat-code: #17243b0d;
+}
+
 * {
     box-sizing: border-box;
 }
 
 body {
-    margin: 8px;
-    background: #fff;
-    color: #000;
-    font-family: "Times New Roman", Times, serif;
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    /* La vista tiene dos bloques separados: .title y #chat. */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    background: var(--chat-background);
+    color: var(--chat-text);
+    font-family: "Segoe UI", Arial, sans-serif;
 }
 
+/* 2. Titulo actual de index.ejs y contenedor principal. */
 .title {
+    width: min(100%, 720px);
+    margin-bottom: 24px;
     text-align: center;
-    color: goldenrod;
 }
 
-.title h1 {
-    margin: 20px 0 16px;
-    font-size: 24px;
+.title h1,
+.chat-header h1 {
+    margin: 0;
+    font-size: clamp(24px, 5vw, 34px);
     line-height: 1.2;
+    letter-spacing: -0.04em;
 }
 
 #chat {
-    /* Centra el recuadro y evita que desborde en pantallas de menos de 300 px. */
-    width: 300px;
-    max-width: 100%;
-    margin: 0 auto;
-    border: 1px solid #444;
-    border-radius: 3px;
-}
-
-#username {
-    display: block;
-    width: 100%;
+    width: min(100%, 720px);
     min-width: 0;
-    padding: 8px;
-    border: 0;
-    border-radius: 3px;
-    background: transparent;
-    font-family: Arial, sans-serif;
-    font-size: 10px;
+    padding: 32px;
+    background: var(--chat-surface);
+    border: 1px solid var(--chat-border);
+    border-radius: 24px;
+    box-shadow: 0 18px 60px #17243b0d;
 }
 
-/* Altura fija para reservar espacio aunque haya pocos mensajes. */
-#messages {
-    height: 220px;
-    padding: 0 8px;
-    overflow-y: auto;
+/* Compatibilidad si despues agregas un encabezado dentro del chat. */
+.chat-header {
+    margin-bottom: 28px;
 }
 
-.message {
-    /* Cada burbuja ocupa solo el ancho de su texto y queda en su propia linea. */
-    display: table;
-    max-width: 100%;
-    margin: 6px 0 0;
-    padding: 4px;
-    border-radius: 3px;
-    background: #23899e;
-    color: #fff;
-    font-size: 12px;
-    line-height: 1.15;
-    /* Conserva los saltos introducidos con Shift+Enter dentro de una burbuja. */
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
+.chat-eyebrow {
+    color: var(--chat-accent);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
 }
 
-/* El aviso solo agrega margenes cuando tiene contenido. */
-#writing:not(:empty) {
-    margin: 6px 8px;
-    font-size: 12px;
+.chat-header h1 {
+    margin: 10px 0;
 }
 
-/* El asistente se distingue sin cambiar el formato compacto del chat. */
-.message--assistant {
-    background: #365b40;
+.chat-header p {
+    margin: 0;
+    color: var(--chat-muted);
+    line-height: 1.5;
+}
+
+/* 3. Nombre de usuario y campo para escribir. */
+label {
     display: block;
-    width: fit-content;
-}
-
-/* El Markdown ya genera sus propios parrafos y saltos de linea. */
-.message-author {
-    display: block;
-    margin-bottom: 4px;
+    margin-bottom: 8px;
+    font-size: 13px;
     font-weight: 600;
 }
 
+#username,
+#writeMessage {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    padding: 13px 16px;
+    border: 1px solid var(--chat-border);
+    border-radius: 12px;
+    background: var(--chat-surface);
+    color: var(--chat-text);
+    font: inherit;
+}
+
+#username::placeholder,
+#writeMessage::placeholder {
+    color: var(--chat-muted);
+}
+
+#username:focus-visible,
+#writeMessage:focus-visible {
+    outline: 3px solid var(--chat-accent);
+    outline-offset: 3px;
+}
+
+#writeMessage {
+    min-height: 110px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+#writeMessage:disabled {
+    background: var(--chat-background);
+    color: var(--chat-muted);
+    cursor: wait;
+}
+
+/* 4. Historial con altura reservada y desplazamiento vertical. */
+#messages {
+    height: clamp(200px, 34vh, 360px);
+    margin-top: 24px;
+    padding: 16px;
+    overflow-y: auto;
+    background: var(--chat-background);
+    border: 1px solid var(--chat-border);
+    border-radius: 16px;
+    scrollbar-color: var(--chat-border) transparent;
+}
+
+.message {
+    width: fit-content;
+    max-width: 90%;
+    min-width: 0;
+    margin-bottom: 12px;
+    padding: 12px 16px;
+    background: var(--chat-message);
+    color: var(--chat-text);
+    border-radius: 14px 14px 14px 4px;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+    line-height: 1.5;
+}
+
+.message:last-child {
+    margin-bottom: 0;
+}
+
+.message--assistant {
+    background: var(--chat-assistant);
+}
+
+/* Los nombres de usuarios y de la IA conservan la negrita. */
+.message > strong,
+.message-author {
+    font-weight: 700;
+}
+
+.message-author {
+    display: block;
+    margin-bottom: 6px;
+}
+
+/* 5. Formato Markdown de las respuestas generadas por la IA. */
 .message-markdown {
     white-space: normal;
-    line-height: 1.4;
     overflow-x: auto;
 }
 
 .message-markdown > :first-child { margin-top: 0; }
 .message-markdown > :last-child { margin-bottom: 0; }
-.message-markdown p { margin: 0.5em 0; }
-.message-markdown ul,
-.message-markdown ol { margin: 0.5em 0; padding-left: 1.5em; }
+.message-markdown p { margin: 0.65em 0; }
 .message-markdown strong { font-weight: 700; }
-.message-markdown a { color: inherit; text-decoration: underline; }
-.message-markdown blockquote { margin: 0.5em 0; padding-left: 8px; border-left: 2px solid #b6d3bd; }
-.message-markdown code { font-family: Consolas, monospace; background: #0003; padding: 1px 3px; border-radius: 2px; }
-.message-markdown pre { max-width: 100%; padding: 8px; overflow-x: auto; white-space: pre; background: #0003; border-radius: 3px; }
+.message-markdown ul,
+.message-markdown ol { margin: 0.65em 0; padding-left: 1.5em; }
+.message-markdown li + li { margin-top: 0.25em; }
+.message-markdown a { color: var(--chat-accent); text-decoration: underline; }
+.message-markdown h1 { font-size: 1.5em; }
+.message-markdown h2 { font-size: 1.3em; }
+.message-markdown h3 { font-size: 1.15em; }
+.message-markdown blockquote { margin: 0.65em 0; padding-left: 12px; border-left: 3px solid var(--chat-border); color: var(--chat-muted); }
+.message-markdown code { font-family: Consolas, monospace; background: var(--chat-code); padding: 2px 4px; border-radius: 4px; }
+.message-markdown pre { max-width: 100%; padding: 12px; overflow-x: auto; white-space: pre; background: var(--chat-code); border-radius: 8px; }
 .message-markdown pre code { padding: 0; background: none; }
 .message-markdown table { border-collapse: collapse; }
 .message-markdown th,
-.message-markdown td { padding: 4px; border: 1px solid #ffffff66; }
+.message-markdown td { padding: 8px; border: 1px solid var(--chat-border); }
+.message-markdown hr { border: 0; border-top: 1px solid var(--chat-border); margin: 1em 0; }
+
+/* 6. Avisos de escritura, espera de la IA y errores del chat. */
+#writing {
+    min-height: 30px;
+    padding: 6px 2px;
+    color: var(--chat-muted);
+    font-size: 12px;
+    overflow-wrap: anywhere;
+}
+
+#botStatus {
+    color: var(--chat-accent);
+    font-size: 12px;
+    overflow-wrap: anywhere;
+}
 
 #botStatus:not(:empty) {
-    margin: 6px 8px;
-    color: #555;
-    font-size: 12px;
+    padding: 0 2px 10px;
 }
 
-#writeMessage:disabled {
-    background: #f4f4f4;
-    cursor: wait;
+/* 7. Ajustes para pantallas pequenas. */
+@media (max-width: 480px) {
+    body {
+        padding: 20px 12px;
+    }
+
+    .title {
+        margin-bottom: 20px;
+    }
+
+    #chat {
+        padding: 20px;
+        border-radius: 18px;
+    }
+
+    #messages {
+        padding: 12px;
+    }
+
+    .message {
+        max-width: 100%;
+        padding: 10px 12px;
+    }
 }
 
-#writeMessage {
-    /* El ancho descuenta los dos margenes laterales de 10 px. */
-    display: block;
-    width: calc(100% - 20px);
-    min-height: 47px;
-    margin: 7px 10px 8px;
-    padding: 10px;
-    border: 1px solid #999;
-    border-radius: 2px;
-    font: 11px monospace;
-    resize: vertical;
-}
-
-#username:focus-visible,
-#writeMessage:focus-visible {
-    /* Resalta el campo activo cuando se navega con el teclado. */
-    outline: 2px solid #23899e;
-    outline-offset: 1px;
-}
+/* Agrega tus nuevos estilos debajo de esta linea. */
