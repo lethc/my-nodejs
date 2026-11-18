@@ -18,17 +18,12 @@
     <div id="chat">
         <input type="text" id="username" aria-label="Nombre de usuario" placeholder="Ingrese su nombre de Usuario">
 
-        <!-- Socket.IO reemplaza estos ejemplos por el historial recibido del servidor. -->
-        <div id="messages" role="log" aria-label="Mensajes de la conversación" aria-live="polite">
-            <div class="message"> Javierespna:Hola </div>
-            <div class="message"> Javierespna:Hola </div>
-        </div>
+        <!-- Socket.IO muestra aqui el historial recibido del servidor. -->
+        <div id="messages" role="log" aria-label="Mensajes de la conversación" aria-live="polite"></div>
         <!-- Espacio reservado para el aviso de que otro usuario esta escribiendo. -->
-        <div id="writing" role="status">
-
-        </div>
+        <div id="writing" role="status"></div>
         <!-- Sin espacios entre las etiquetas para que el mensaje empiece vacio. -->
-        <textarea id="writeMessage" aria-label="Mensaje"></textarea>
+        <textarea id="writeMessage" aria-label="Mensaje" placeholder="Ingrese su Mensaje"></textarea>
 
         <!-- Ruta absoluta: socket.io la sirve automaticamente desde el servidor -->
         <script src="/socket.io/socket.io.js"></script>
@@ -40,22 +35,58 @@
             const writeMessage = document.getElementById('writeMessage')
             const writing = document.getElementById('writing')
             const messages = document.getElementById('messages')
+            let writingTimeout
 
             // El evento entrega el historial completo; reemplazamos la lista para no duplicarlo.
             socket.on('all-messages', (m)=>{
-                let content = ''
+                messages.replaceChildren()
                 for(const message of m) {
-                    content+=`
-                    <div class="message">
-                        ${message.username}:${message.message}
-                    </div>
-                    <br>
-                    `
+                    const bubble = document.createElement('div')
+                    bubble.className = 'message'
+                    // textContent muestra el texto literalmente, sin ejecutarlo como HTML.
+                    bubble.textContent = `${message.username}:${message.message}`
+                    messages.appendChild(bubble)
                 }
-                messages.innerHTML = content
                 // Mantiene visible el final del historial cuando llegan mensajes.
                 messages.scrollTop = messages.scrollHeight
             })
+            
+            // input detecta cambios del texto, incluidos los que se pegan con el raton.
+            writeMessage.addEventListener('input', ()=>{
+                if(username.value.trim() && writeMessage.value.trim()){
+                    socket.emit('writing', username.value.trim())
+                }
+            })
+            
+            socket.on('writing', (name) => {
+                writing.textContent = name + " esta escribiendo"
+                // Cada aviso reinicia la espera: se oculta tres segundos despues del ultimo.
+                clearTimeout(writingTimeout)
+                writingTimeout = setTimeout(()=>{
+                    writing.textContent = ''
+                }, 3000)
+            })
+            
+            // Enter envia; Shift+Enter permite escribir un salto de linea.
+            writeMessage.addEventListener('keydown', (event)=>{
+                if(event.key === 'Enter' && !event.shiftKey && !event.isComposing){
+                    // Evita insertar el Enter en el texto y enviar varias veces al mantenerlo pulsado.
+                    event.preventDefault()
+                    if(event.repeat) return
+                    const name = username.value.trim()
+                    const text = writeMessage.value.trim()
+                    if(!name || !text){
+                        return alert("El nombre del usuario y el mensaje son requeridos")
+                    }
+                    // message coincide con el campo que valida el servidor y lee el historial.
+                    socket.emit('new-message', {
+                        username: name,
+                        message: text
+                    })
+                    writeMessage.value=""
+                }
+            })
+
         </script>
     </div>
 
