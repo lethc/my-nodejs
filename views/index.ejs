@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
@@ -7,27 +7,55 @@
     <title>
         <%=title%>
     </title>
+    <!-- Express publica public/css/chat.css mediante la URL /css/chat.css. -->
+    <link rel="stylesheet" href="/css/chat.css">
 </head>
 
 <body>
+    <div class="title">
+        <h1>EJEMPLO DE UN CHAT</h1>
+    </div>
     <div id="chat">
-        <input type="text" id="username" placeholder="Ingrese su nombre de Usuario">
+        <input type="text" id="username" aria-label="Nombre de usuario" placeholder="Ingrese su nombre de Usuario">
 
-        <div id="messages">
+        <!-- Socket.IO reemplaza estos ejemplos por el historial recibido del servidor. -->
+        <div id="messages" role="log" aria-label="Mensajes de la conversación" aria-live="polite">
             <div class="message"> Javierespna:Hola </div>
             <div class="message"> Javierespna:Hola </div>
         </div>
-        <div id="writing">
+        <!-- Espacio reservado para el aviso de que otro usuario esta escribiendo. -->
+        <div id="writing" role="status">
 
         </div>
-        <!-- El textarea va en una sola linea: cualquier espacio interno impide que se vea el placeholder -->
-        <textarea id="write-message" placeholder="Ingrese su Mensaje"></textarea>
+        <!-- Sin espacios entre las etiquetas para que el mensaje empiece vacio. -->
+        <textarea id="writeMessage" aria-label="Mensaje"></textarea>
 
         <!-- Ruta absoluta: socket.io la sirve automaticamente desde el servidor -->
         <script src="/socket.io/socket.io.js"></script>
         <script>
             // io() abre la conexion con el servidor; dispara el evento "connection" de socket.js
             const socket = io()
+            // Los identificadores deben coincidir exactamente con los del HTML.
+            const username = document.getElementById('username')
+            const writeMessage = document.getElementById('writeMessage')
+            const writing = document.getElementById('writing')
+            const messages = document.getElementById('messages')
+
+            // El evento entrega el historial completo; reemplazamos la lista para no duplicarlo.
+            socket.on('all-messages', (m)=>{
+                let content = ''
+                for(const message of m) {
+                    content+=`
+                    <div class="message">
+                        ${message.username}:${message.message}
+                    </div>
+                    <br>
+                    `
+                }
+                messages.innerHTML = content
+                // Mantiene visible el final del historial cuando llegan mensajes.
+                messages.scrollTop = messages.scrollHeight
+            })
         </script>
     </div>
 
