@@ -68,8 +68,25 @@
                 for(const message of m) {
                     const bubble = document.createElement('div')
                     bubble.className = message.role === 'assistant' ? 'message message--assistant' : 'message'
-                    // textContent muestra el texto literalmente, sin ejecutarlo como HTML.
-                    bubble.textContent = `${message.username}:${message.message}`
+                    if(message.role === 'assistant' && typeof message.html === 'string'){
+                        const author = document.createElement('span')
+                        author.className = 'message-author'
+                        author.textContent = `${message.username}:`
+                        const content = document.createElement('div')
+                        content.className = 'message-markdown'
+                        // html viene filtrado por messagePresenter en el servidor, nunca del formulario.
+                        content.innerHTML = message.html
+                        bubble.appendChild(author)
+                        bubble.appendChild(content)
+                    } else {
+                        // Resalta solo el nombre; ambos campos siguen siendo texto literal.
+                        const author = document.createElement('strong')
+                        author.textContent = `${message.username}: `
+                        const content = document.createElement('span')
+                        content.textContent = message.message
+                        bubble.appendChild(author)
+                        bubble.appendChild(content)
+                    }
                     messages.appendChild(bubble)
                 }
                 // Mantiene visible el final del historial cuando llegan mensajes.

@@ -15,7 +15,7 @@ function view() {
     }]))
     const socket = {connected: true, on(event, handler) {callbacks[event] = handler}, timeout() {return this}, emit(event, data, acknowledge) {sends.push({event, data, acknowledge})}}
     vm.runInNewContext(html.match(/<script>([\s\S]*?)<\/script>/)[1], {
-        io: () => socket, document: {getElementById: id => elements[id], createElement: () => ({})},
+        io: () => socket, document: {getElementById: id => elements[id], createElement: () => ({children: [], appendChild(child) {this.children.push(child)}})},
         clearTimeout() {}, setTimeout() {}, alert() {}
     })
     elements.username.value = 'Ana'
@@ -40,8 +40,21 @@ test('limpia el texto si quedo guardado y distingue respuestas del asistente', (
     v.sends[0].acknowledge(null, {ok: true, saved: true})
     assert.equal(v.elements.writeMessage.value, '')
     v.callbacks['all-messages']([{username: 'Asistente Virtual', message: '<b>Hola</b>', role: 'assistant'}])
-    assert.equal(v.elements.messages.children[0].textContent, 'Asistente Virtual:<b>Hola</b>')
+    assert.equal(v.elements.messages.children[0].children[0].textContent, 'Asistente Virtual: ')
+    assert.equal(v.elements.messages.children[0].children[1].textContent, '<b>Hola</b>')
     assert.equal(v.elements.messages.children[0].className, 'message message--assistant')
     v.callbacks['bot-status']({busy: true})
     assert.equal(v.elements.botStatus.textContent, 'Asistente Virtual está pensando...')
+})
+
+test('muestra el HTML filtrado del asistente y mantiene el nombre como texto', () => {
+    const v = view()
+    v.callbacks['all-messages']([{username: '<img src=x>', message: '**Hola**', html: '<p><strong>Hola</strong></p>', role: 'assistant'}])
+    const bubble = v.elements.messages.children[0]
+    assert.equal(bubble.children[0].textContent, '<img src=x>:')
+    assert.equal(bubble.children[1].innerHTML, '<p><strong>Hola</strong></p>')
+    assert.equal(bubble.children[1].className, 'message-markdown')
+    v.callbacks['all-messages']([{username: 'Ana', message: '**Hola** <img src=x>', role: 'user'}])
+    assert.equal(v.elements.messages.children[0].children[0].textContent, 'Ana: ')
+    assert.equal(v.elements.messages.children[0].children[1].textContent, '**Hola** <img src=x>')
 })

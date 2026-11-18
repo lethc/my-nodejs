@@ -74,7 +74,37 @@ body {
 /* El asistente se distingue sin cambiar el formato compacto del chat. */
 .message--assistant {
     background: #365b40;
+    display: block;
+    width: fit-content;
 }
+
+/* El Markdown ya genera sus propios parrafos y saltos de linea. */
+.message-author {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.message-markdown {
+    white-space: normal;
+    line-height: 1.4;
+    overflow-x: auto;
+}
+
+.message-markdown > :first-child { margin-top: 0; }
+.message-markdown > :last-child { margin-bottom: 0; }
+.message-markdown p { margin: 0.5em 0; }
+.message-markdown ul,
+.message-markdown ol { margin: 0.5em 0; padding-left: 1.5em; }
+.message-markdown strong { font-weight: 700; }
+.message-markdown a { color: inherit; text-decoration: underline; }
+.message-markdown blockquote { margin: 0.5em 0; padding-left: 8px; border-left: 2px solid #b6d3bd; }
+.message-markdown code { font-family: Consolas, monospace; background: #0003; padding: 1px 3px; border-radius: 2px; }
+.message-markdown pre { max-width: 100%; padding: 8px; overflow-x: auto; white-space: pre; background: #0003; border-radius: 3px; }
+.message-markdown pre code { padding: 0; background: none; }
+.message-markdown table { border-collapse: collapse; }
+.message-markdown th,
+.message-markdown td { padding: 4px; border: 1px solid #ffffff66; }
 
 #botStatus:not(:empty) {
     margin: 6px 8px;

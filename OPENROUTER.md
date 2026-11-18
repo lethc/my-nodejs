@@ -42,6 +42,7 @@ Los documentos anteriores sin `role` se tratan como mensajes de usuario. Los nue
 - El navegador conserva el texto si el servidor rechaza el mensaje antes de guardarlo.
 - La API REST se invoca desde Node.js mediante `fetch`, con una espera maxima de 30 segundos y hasta 1024 tokens de salida.
 - No se necesitan paquetes adicionales para llamar a OpenRouter.
+- Las respuestas se guardan como Markdown original y se muestran con formato. `marked` genera HTML y `sanitize-html` filtra etiquetas, atributos y enlaces antes de enviarlo a la vista. El nombre y los mensajes de usuario se muestran como texto literal.
 
 ## Errores habituales
 
